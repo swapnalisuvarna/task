@@ -1,15 +1,10 @@
 <?php
-// ============================================
-// index.php - Main Page: Display All Tasks
-// ============================================
 
-// Include database connection
 require_once 'config/db.php';
 
-// ---- Get filter from URL (?filter=all | pending | completed) ----
+
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 
-// ---- Fetch tasks from database based on filter ----
 if ($filter === 'pending') {
     $sql = "SELECT * FROM tasks WHERE status = 'Pending' ORDER BY created_at DESC";
 } elseif ($filter === 'completed') {
@@ -21,7 +16,7 @@ if ($filter === 'pending') {
 $result = mysqli_query($conn, $sql);
 $tasks  = mysqli_fetch_all($result, MYSQLI_ASSOC); // All rows as array
 
-// ---- Count stats ----
+
 $total_result    = mysqli_query($conn, "SELECT COUNT(*) as c FROM tasks");
 $pending_result  = mysqli_query($conn, "SELECT COUNT(*) as c FROM tasks WHERE status='Pending'");
 $done_result     = mysqli_query($conn, "SELECT COUNT(*) as c FROM tasks WHERE status='Completed'");
@@ -30,7 +25,7 @@ $total   = mysqli_fetch_assoc($total_result)['c'];
 $pending = mysqli_fetch_assoc($pending_result)['c'];
 $done    = mysqli_fetch_assoc($done_result)['c'];
 
-// ---- Flash messages ----
+
 $flash_success = '';
 $flash_error   = '';
 
@@ -46,7 +41,7 @@ if (isset($_GET['error'])) {
     if ($_GET['error'] === 'notfound') $flash_error = '❌ Task not found.';
 }
 
-// ---- Today's date for overdue comparison ----
+
 $today = date('Y-m-d');
 ?>
 <!DOCTYPE html>
@@ -55,26 +50,26 @@ $today = date('Y-m-d');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Task Manager</title>
-    <!-- Our CSS -->
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="page-wrapper">
 
-    <!-- ==================== HEADER ==================== -->
+    
     <header class="site-header">
         <div class="header-left">
             <h1>📚 Task Manager</h1>
             <p>Stay on top of your studies &amp; deadlines</p>
         </div>
         <div class="header-right">
-            <!-- Dark Mode Toggle -->
+           
             <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
         </div>
     </header>
 
-    <!-- ==================== FLASH MESSAGES ==================== -->
+   
     <?php if ($flash_success): ?>
         <div class="alert alert-success"><?= htmlspecialchars($flash_success) ?></div>
     <?php endif; ?>
